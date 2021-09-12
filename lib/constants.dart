@@ -1,0 +1,1 @@
+const DJIGIBAO_TITLE = "Djigibao Manager";
