@@ -1,0 +1,1 @@
+enum Destination { Login, Home }
