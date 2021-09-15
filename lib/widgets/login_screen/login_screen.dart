@@ -1,7 +1,8 @@
 import 'dart:ui';
 
+import 'package:djigibao_manager/navigation/destination.dart';
+import 'package:djigibao_manager/navigation/navigation.dart';
 import 'package:djigibao_manager/widgets/login_screen/login_screen_blocs.dart';
-import 'package:djigibao_manager/widgets/main_screen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -11,6 +12,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final navigation = Navigation(context: context);
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         body: Padding(
@@ -36,10 +38,7 @@ class LoginScreen extends StatelessWidget {
                     onPressed: () {
                       if (loginNameController.state.isNotEmpty &&
                           loginPassController.state.isNotEmpty)
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MainScreen()));
+                        navigation.navigateTo(Destination.Home);
                     },
                     style: ButtonStyle(
                         backgroundColor:

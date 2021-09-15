@@ -1,9 +1,13 @@
 import 'package:djigibao_manager/database/hiveDatabase.dart';
+import 'package:djigibao_manager/firebase/base.dart';
+import 'package:djigibao_manager/firebase/firestore/base.dart';
 import 'package:djigibao_manager/widgets/login_screen/login_screen.dart';
 import 'package:djigibao_manager/widgets/main_screen/main_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
+  final firebase = FirebaseBase();
+  await firebase.initFirebase();
   final username = await initHive();
   runApp(MyApp(username: username));
 }
