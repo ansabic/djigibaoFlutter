@@ -1,8 +1,8 @@
 import 'package:djigibao_manager/database/hiveDatabase.dart';
 import 'package:djigibao_manager/firebase/base.dart';
-import 'package:djigibao_manager/firebase/firestore/base.dart';
 import 'package:djigibao_manager/widgets/login_screen/login_screen.dart';
 import 'package:djigibao_manager/widgets/main_screen/main_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -28,7 +28,29 @@ class MyApp extends StatelessWidget {
             textTheme: TextTheme(bodyText1: TextStyle(), bodyText2: TextStyle())
                 .apply(
                     bodyColor: Colors.white, displayColor: Colors.blueAccent)),
-        home: FirstSwitchScreen(username: username));
+        home: FutureBuilder(
+            future: Firebase.initializeApp(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Scaffold(
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  body: Center(
+                    child: Text(snapshot.error.toString(),
+                        style: Theme.of(context).textTheme.bodyText1),
+                  ),
+                );
+              }
+              if (snapshot.connectionState == ConnectionState.done) {
+                return FirstSwitchScreen(username: username);
+              } else
+                return Scaffold(
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  body: Center(
+                    child: Text("Loading...",
+                        style: Theme.of(context).textTheme.bodyText1),
+                  ),
+                );
+            }));
   }
 }
 

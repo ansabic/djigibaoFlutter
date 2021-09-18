@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "370423933574",
+    "project_id": "djigibao-manager",
+    "storage_bucket": "djigibao-manager.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:370423933574:android:df9838bc893fddce2ebf07",
+        "android_client_info": {
+          "package_name": "com.mite.djigibao_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "370423933574-j0pslv22uhqim0e3f13rp2hll9q5bdua.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCU3YfoqK-IehQ0uP_c5Poa-XMcqx2E8II"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "370423933574-j0pslv22uhqim0e3f13rp2hll9q5bdua.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
