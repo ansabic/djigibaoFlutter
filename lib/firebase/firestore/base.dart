@@ -4,6 +4,6 @@ import 'package:djigibao_manager/constants.dart';
 class FirestoreBase {
   final collectionUsers =
       FirebaseFirestore.instance.collection(FIRESTORE_USERS);
-
-  void init() {}
+  final collectionSongs =
+      FirebaseFirestore.instance.collection(FIRESTORE_SONGS);
 }

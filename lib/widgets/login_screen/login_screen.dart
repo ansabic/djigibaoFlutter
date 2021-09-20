@@ -43,10 +43,9 @@ class LoginScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 80, vertical: 20),
                 child: Theme(
                   data: Theme.of(context)
-                      .copyWith(canvasColor: Theme.of(context).backgroundColor),
+                      .copyWith(canvasColor: Colors.transparent),
                   child: DropdownButtonFormField<String>(
-                    style: TextStyle(
-                        backgroundColor: Theme.of(context).backgroundColor),
+                    style: TextStyle(backgroundColor: Colors.transparent),
                     items: Role.values.map((e) {
                       return DropdownMenuItem(
                         value: roleToValue(e),
@@ -74,12 +73,12 @@ class LoginScreen extends StatelessWidget {
                                 name: loginNameController.state,
                                 role: roleFromValue(rolePicked.rolePicked)),
                             loginPassController.state);
-                        navigation.navigateTo(Destination.Home);
+                        navigation.navigateFromStartTo(MainDestination.Home);
                       }
                     },
                     style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all(Colors.deepPurple)),
+                            MaterialStateProperty.all(Colors.amber)),
                     child: Text(
                       "Confirm",
                       style: Theme.of(context).textTheme.bodyText1,

@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:djigibao_manager/database/repository.dart';
+import 'package:djigibao_manager/database/local_repository.dart';
 import 'package:djigibao_manager/firebase/firestore/user_repository_remote.dart';
 import 'package:djigibao_manager/database/entities/user.dart';
 import 'package:djigibao_manager/database/entities/role.dart';

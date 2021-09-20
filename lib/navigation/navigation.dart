@@ -1,3 +1,9 @@
+import 'package:djigibao_manager/widgets/main_screen/account/account_screen.dart';
+import 'package:djigibao_manager/widgets/main_screen/events/events_screen.dart';
+import 'package:djigibao_manager/widgets/main_screen/settings/settings_screen.dart';
+import 'package:djigibao_manager/widgets/main_screen/songs/add_song/add_song_screen.dart';
+import 'package:djigibao_manager/widgets/main_screen/songs/songs_screen.dart';
+
 import 'destination.dart';
 import 'package:djigibao_manager/widgets/login_screen/login_screen.dart';
 import 'package:djigibao_manager/widgets/main_screen/main_screen.dart';
@@ -8,15 +14,40 @@ class Navigation {
 
   Navigation({required this.context});
 
-  void navigateTo(Destination destination) {
+  void navigateFromStartTo(MainDestination destination) {
     switch (destination) {
-      case Destination.Login:
+      case MainDestination.Login:
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => LoginScreen()));
         break;
-      case Destination.Home:
+      case MainDestination.Home:
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => MainScreen()));
+        break;
+    }
+  }
+
+  void navigateFromHomeTo(HomeDestination destination) {
+    switch (destination) {
+      case HomeDestination.Songs:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SongsScreen()));
+        break;
+      case HomeDestination.Events:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => EventsScreen()));
+        break;
+      case HomeDestination.Settings:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+        break;
+      case HomeDestination.Account:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => AccountScreen()));
+        break;
+      case HomeDestination.AddSong:
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => AddSongScreen()));
         break;
     }
   }
