@@ -82,7 +82,7 @@ class _SongItem extends State<SongItem> {
                       ),
                     ),
                     Spacer(flex: 84),
-                    Icon(Icons.edit)
+                    IconButton(onPressed: () {}, icon: Icon(Icons.edit))
                   ],
                 ),
                 Visibility(
