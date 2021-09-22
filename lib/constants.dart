@@ -9,3 +9,5 @@ const HIVE_PASSWORD = "password";
 const HIVE_LAST_SONGS_SYNC = "last_songs_sync";
 const HIVE_LAST_USERS_SYNC = "last_users_sync";
 const HIVE_SYNC_TIME = "sync_time";
+
+const STORAGE_BASE_LOCATION_ATTACHMENTS = "gs://djigibao-manager.appspot.com/attachments/";

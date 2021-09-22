@@ -44,7 +44,6 @@ class AddSongManager extends Cubit<bool> {
       attachments.add(Attachment(
           name: singleResult.name,
           localLocation: singleResult.path ?? "",
-          remoteLocation: "",
           type: singleResult.extension ?? ""));
     }
   }

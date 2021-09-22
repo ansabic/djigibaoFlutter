@@ -159,14 +159,6 @@ class AttachmentItem extends StatelessWidget {
                   color: Colors.amber,
                 )),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Text(attachment.localLocation),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Text(attachment.remoteLocation),
-          )
         ],
       ),
     );

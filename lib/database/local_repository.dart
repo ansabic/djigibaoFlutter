@@ -31,8 +31,8 @@ class LocalRepository {
     Hive.box(HIVE_SONGS).put(song.title, song);
   }
 
-  void removeSong(String title) {
-    Hive.box(HIVE_SONGS).delete(title);
+  Future<void> removeSong(String title) async{
+    await Hive.box(HIVE_SONGS).delete(title);
   }
 
   List<Song> getAllSongs() {
@@ -51,12 +51,20 @@ class LocalRepository {
     Hive.box(HIVE_ATTACHMENTS).put(name, attachments);
   }
 
+  void updateAttachment(Attachment attachment, String name) {
+    Hive.box(HIVE_ATTACHMENTS).put(name, attachment);
+  }
+
+  void deleteAttachmentsForSong(String songName) {
+    Hive.box(HIVE_ATTACHMENTS).delete(songName);
+  }
+
   List<Attachment> getAttachmentsLocal() {
     return Hive.box(HIVE_ATTACHMENTS).values.cast<Attachment>().toList();
   }
 
   List<Attachment> getAttachmentsLocalWithSong(String songName) {
-    return Hive.box(HIVE_ATTACHMENTS).get(songName);
+    return (Hive.box(HIVE_ATTACHMENTS).get(songName) as Iterable).cast<Attachment>().toList();
   }
 
   Future<DateTime> getSongsLastSync() async {
