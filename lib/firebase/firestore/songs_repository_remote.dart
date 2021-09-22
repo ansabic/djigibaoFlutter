@@ -30,6 +30,10 @@ class SongsRepositoryRemote {
     await collectionSongs.doc(song.title).set(song.toJson());
   }
 
+  Future<void> removeSongRemote(String title) async {
+    await collectionSongs.doc(title).delete();
+  }
+
   void updateRemoteLocal(List<Song> songsRemote) {
     final localRepository = LocalRepository();
     final localSongs = Hive.box(HIVE_SONGS).values.cast<Song>();

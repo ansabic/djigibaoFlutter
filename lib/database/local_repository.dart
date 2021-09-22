@@ -30,6 +30,10 @@ class LocalRepository {
     await Hive.box(HIVE_SONGS).put(song.title, song);
   }
 
+  Future<void> removeSong(String title) async {
+    await Hive.box(HIVE_SONGS).delete(title);
+  }
+
   List<Song> getSongs() {
     return Hive.box(HIVE_SONGS).values.toList() as List<Song>;
   }

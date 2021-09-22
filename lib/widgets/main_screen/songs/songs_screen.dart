@@ -15,17 +15,15 @@ class SongsScreen extends StatelessWidget {
             backgroundColor: Theme.of(context).backgroundColor,
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                navigation.navigateFromHomeTo(HomeDestination.AddSong);
+                navigation.navigateFromSong(
+                    destination: SongDestination.AddSong);
               },
               child: Icon(Icons.add),
             ),
             body: ListView.builder(
               itemCount: songsManager.songs.length,
               itemBuilder: (context, position) {
-                return SongItem(
-                    title: (songsManager.songs[position] as Song).title,
-                    author: (songsManager.songs[position] as Song).author,
-                    body: (songsManager.songs[position] as Song).body);
+                return SongItem(song: songsManager.songs[position] as Song);
               },
             )),
         onWillPop: () async => false);
@@ -33,27 +31,23 @@ class SongsScreen extends StatelessWidget {
 }
 
 class SongItem extends StatefulWidget {
-  final String title;
-  final String author;
-  final String body;
+  final Song song;
 
-  SongItem({required this.title, required this.author, required this.body});
+  SongItem({required this.song});
 
   @override
-  State<StatefulWidget> createState() =>
-      _SongItem(title: title, author: author, body: body);
+  State<StatefulWidget> createState() => _SongItem(song: song);
 }
 
 class _SongItem extends State<SongItem> {
   var detailsVisible = false;
-  final String title;
-  final String author;
-  final String body;
+  final Song song;
 
-  _SongItem({required this.title, required this.author, required this.body});
+  _SongItem({required this.song});
 
   @override
   Widget build(BuildContext context) {
+    final navigation = Navigation(context: context);
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -74,7 +68,7 @@ class _SongItem extends State<SongItem> {
                   children: [
                     Spacer(flex: 100),
                     Text(
-                      title,
+                      song.title,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 18,
@@ -82,7 +76,13 @@ class _SongItem extends State<SongItem> {
                       ),
                     ),
                     Spacer(flex: 84),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.edit))
+                    IconButton(
+                        onPressed: () {
+                          navigation.navigateFromSong(
+                              destination: SongDestination.EditSong,
+                              song: song);
+                        },
+                        icon: Icon(Icons.edit))
                   ],
                 ),
                 Visibility(
@@ -97,7 +97,7 @@ class _SongItem extends State<SongItem> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  author,
+                                  song.author,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.amber,
@@ -107,7 +107,7 @@ class _SongItem extends State<SongItem> {
                             ),
                           ),
                           Text(
-                            body,
+                            song.body,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.amber,

@@ -1,10 +1,16 @@
+import 'package:djigibao_manager/database/entities/attachment.dart';
 import 'package:djigibao_manager/database/entities/song.dart';
 import 'package:djigibao_manager/navigation/destination.dart';
 import 'package:djigibao_manager/navigation/navigation.dart';
 import 'package:djigibao_manager/widgets/main_screen/songs/add_song/add_song_blocs.dart';
 import 'package:flutter/material.dart';
 
-class AddSongScreen extends StatelessWidget {
+class AddSongScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _AddSongScreen();
+}
+
+class _AddSongScreen extends State<AddSongScreen> {
   final titleController = TextEditingController();
   final bodyController = TextEditingController();
   final authorController = TextEditingController();
@@ -93,12 +99,58 @@ class AddSongScreen extends StatelessWidget {
                     decoration: InputDecoration(
                         border: OutlineInputBorder(), hintText: "Song Body"),
                     controller: bodyController,
-                  )
+                  ),
+                  SizedBox(
+                      height: 300,
+                      width: 150,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: ListView.builder(
+                          itemCount: addSongManager.attachments.length,
+                          itemBuilder: (context, position) {
+                            return AttachmentItem(
+                                attachment:
+                                    addSongManager.attachments[position]);
+                          },
+                        ),
+                      )),
+                  IconButton(
+                      onPressed: () async {
+                        await addSongManager.pickAttachment();
+                        setState(() {});
+                      },
+                      icon: Icon(Icons.attachment))
                 ],
               )
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class AttachmentItem extends StatelessWidget {
+  final Attachment attachment;
+
+  AttachmentItem({required this.attachment});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 50,
+      width: 100,
+      child: Row(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(attachment.name,
+                style: TextStyle(
+                  color: Colors.amber,
+                )),
+          ),
+          Text(attachment.location)
+        ],
       ),
     );
   }

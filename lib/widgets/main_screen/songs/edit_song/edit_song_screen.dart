@@ -5,29 +5,74 @@ import 'package:djigibao_manager/widgets/main_screen/songs/add_song/add_song_blo
 import 'package:djigibao_manager/widgets/main_screen/songs/edit_song/edit_song_blocs.dart';
 import 'package:flutter/material.dart';
 
-class AddSongScreen extends StatelessWidget {
-  final titleController = TextEditingController();
-  final bodyController = TextEditingController();
-  final authorController = TextEditingController();
+class EditSongScreen extends StatefulWidget {
+  final Song? song;
 
-  final editSongManager = EditSongManager();
+  EditSongScreen({required this.song});
+
+  @override
+  State<StatefulWidget> createState() => _EditSongScreen(song: song);
+}
+
+class _EditSongScreen extends State<EditSongScreen> {
+  final Song? song;
+
+  _EditSongScreen({required this.song});
+
+  late final TextEditingController titleController;
+  late final TextEditingController bodyController;
+  late final TextEditingController authorController;
+
+  late final EditSongManager editSongManager;
+
+  @override
+  void initState() {
+    super.initState();
+    titleController = TextEditingController(text: song?.title);
+    bodyController = TextEditingController(text: song?.body);
+    authorController = TextEditingController(text: song?.author);
+
+    editSongManager = EditSongManager(oldName: song?.title);
+  }
 
   @override
   Widget build(BuildContext context) {
     final navigation = Navigation(context: context);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await editSongManager.editSong(Song(
-              title: titleController.text,
-              body: bodyController.text,
-              author: authorController.text,
-              created: DateTime.now(),
-              lastModified: DateTime.now()));
-          navigation.navigateFromStartTo(MainDestination.Home);
-        },
-        child: Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: FloatingActionButton(
+                onPressed: () async {
+                  await editSongManager.deleteSong();
+                  navigation.navigateFromStartTo(MainDestination.Home);
+                },
+                child: Icon(Icons.delete)),
+          ),
+          StreamBuilder<bool>(
+            stream: editSongManager.stream,
+            builder: (context, snapshot) {
+              return Visibility(
+                visible: snapshot.data ?? true,
+                child: FloatingActionButton(
+                  onPressed: () async {
+                    await editSongManager.editSong(Song(
+                        title: titleController.text,
+                        body: bodyController.text,
+                        author: authorController.text,
+                        created: song?.created ?? DateTime.now(),
+                        lastModified: DateTime.now()));
+                    navigation.navigateFromStartTo(MainDestination.Home);
+                  },
+                  child: Icon(Icons.save),
+                ),
+              );
+            },
+          )
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 50, horizontal: 30),

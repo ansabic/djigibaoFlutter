@@ -1,3 +1,5 @@
 enum MainDestination { Login, Home }
 
-enum HomeDestination { Songs, AddSong, Events, Settings, Account }
+enum HomeDestination { Songs, Events, Settings, Account }
+
+enum SongDestination { AddSong, EditSong }
