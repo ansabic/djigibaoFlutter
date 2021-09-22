@@ -1,7 +1,6 @@
 import 'package:djigibao_manager/database/hiveDatabase.dart';
 import 'package:djigibao_manager/firebase/base.dart';
 import 'package:djigibao_manager/firebase/firestore/songs_repository_remote.dart';
-import 'package:djigibao_manager/firebase/firestore/user_repository_remote.dart';
 import 'package:djigibao_manager/widgets/login_screen/login_screen.dart';
 import 'package:djigibao_manager/widgets/main_screen/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -61,8 +60,8 @@ class FirstSwitchScreen extends StatelessWidget {
 
   FirstSwitchScreen({required this.username});
 
-  Future<void> syncFirebase() async {
-    await SongsRepositoryRemote().syncSongsRemote();
+  void syncFirebase() {
+    SongsRepositoryRemote().syncSongsRemote();
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:djigibao_manager/database/entities/song.dart';
 import 'package:djigibao_manager/navigation/destination.dart';
 import 'package:djigibao_manager/navigation/navigation.dart';
-import 'package:djigibao_manager/widgets/main_screen/songs/add_song/add_song_blocs.dart';
+import 'package:djigibao_manager/widgets/main_screen/songs/add_song/add_song_screen.dart';
 import 'package:djigibao_manager/widgets/main_screen/songs/edit_song/edit_song_blocs.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +33,8 @@ class _EditSongScreen extends State<EditSongScreen> {
     authorController = TextEditingController(text: song?.author);
 
     editSongManager = EditSongManager(oldName: song?.title);
+    editSongManager.attachments = editSongManager.localRepository
+        .getAttachmentsLocalWithSong(song?.title ?? "");
   }
 
   @override
@@ -46,8 +48,8 @@ class _EditSongScreen extends State<EditSongScreen> {
           Padding(
             padding: EdgeInsets.only(bottom: 20),
             child: FloatingActionButton(
-                onPressed: () async {
-                  await editSongManager.deleteSong();
+                onPressed: () {
+                  editSongManager.deleteSong();
                   navigation.navigateFromStartTo(MainDestination.Home);
                 },
                 child: Icon(Icons.delete)),
@@ -131,7 +133,21 @@ class _EditSongScreen extends State<EditSongScreen> {
                     decoration: InputDecoration(
                         border: OutlineInputBorder(), hintText: "Song Body"),
                     controller: bodyController,
-                  )
+                  ),
+                  SizedBox(
+                      height: 200,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: ListView.builder(
+                          padding: EdgeInsets.only(top: 0),
+                          itemCount: editSongManager.attachments.length,
+                          itemBuilder: (context, position) {
+                            return AttachmentItem(
+                                attachment:
+                                    editSongManager.attachments[position]);
+                          },
+                        ),
+                      ))
                 ],
               )
             ],

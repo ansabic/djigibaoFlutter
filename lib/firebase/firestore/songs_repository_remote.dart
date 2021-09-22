@@ -26,12 +26,12 @@ class SongsRepositoryRemote {
     return songsRemote;
   }
 
-  Future<void> insertSongRemote(Song song) async {
-    await collectionSongs.doc(song.title).set(song.toJson());
+  void insertSongRemote(Song song) {
+    collectionSongs.doc(song.title).set(song.toJson());
   }
 
-  Future<void> removeSongRemote(String title) async {
-    await collectionSongs.doc(title).delete();
+  void removeSongRemote(String title) {
+    collectionSongs.doc(title).delete();
   }
 
   void updateRemoteLocal(List<Song> songsRemote) {
@@ -69,12 +69,12 @@ class SongsRepositoryRemote {
     final newRemote = songsRemote
         .map((e) => e.title)
         .where((element) => !localSongs.map((e) => e.title).contains(element));
-    newLocal.forEach((title) async {
-      await collectionSongs.doc(title).set(
+    newLocal.forEach((title) {
+      collectionSongs.doc(title).set(
           localSongs.firstWhere((element) => title == element.title).toJson());
     });
-    newRemote.forEach((title) async {
-      await localRepository.saveSong(
+    newRemote.forEach((title) {
+      localRepository.saveSong(
           songsRemote.firstWhere((element) => element.title == title));
     });
   }

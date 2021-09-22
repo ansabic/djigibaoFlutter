@@ -7,9 +7,15 @@ class Attachment {
   @HiveField(0)
   final String name;
   @HiveField(1)
-  final String location;
+  final String localLocation;
   @HiveField(2)
+  final String remoteLocation;
+  @HiveField(3)
   final String type;
 
-  Attachment({required this.name, required this.location, required this.type});
+  Attachment(
+      {required this.name,
+      required this.localLocation,
+      required this.remoteLocation,
+      required this.type});
 }

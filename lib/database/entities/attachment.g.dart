@@ -18,20 +18,23 @@ class AttachmentAdapter extends TypeAdapter<Attachment> {
     };
     return Attachment(
       name: fields[0] as String,
-      location: fields[1] as String,
-      type: fields[2] as String,
+      localLocation: fields[1] as String,
+      remoteLocation: fields[2] as String,
+      type: fields[3] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Attachment obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.location)
+      ..write(obj.localLocation)
       ..writeByte(2)
+      ..write(obj.remoteLocation)
+      ..writeByte(3)
       ..write(obj.type);
   }
 

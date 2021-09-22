@@ -1,4 +1,5 @@
 import 'package:djigibao_manager/constants.dart';
+import 'package:djigibao_manager/database/entities/attachment.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'entities/song.dart';
@@ -18,32 +19,44 @@ class LocalRepository {
     return await box.get(HIVE_USER) as User;
   }
 
-  Future<void> savePassword(String password) async {
-    await Hive.box(HIVE_USER).put(HIVE_PASSWORD, password);
+  void savePassword(String password) {
+    Hive.box(HIVE_USER).put(HIVE_PASSWORD, password);
   }
 
-  Future<void> saveThisUser(User user) async {
-    await Hive.box(HIVE_USER).put(HIVE_USER, user);
+  void saveThisUser(User user) {
+    Hive.box(HIVE_USER).put(HIVE_USER, user);
   }
 
-  Future<void> saveSong(Song song) async {
-    await Hive.box(HIVE_SONGS).put(song.title, song);
+  void saveSong(Song song) {
+    Hive.box(HIVE_SONGS).put(song.title, song);
   }
 
-  Future<void> removeSong(String title) async {
-    await Hive.box(HIVE_SONGS).delete(title);
+  void removeSong(String title) {
+    Hive.box(HIVE_SONGS).delete(title);
   }
 
-  List<Song> getSongs() {
-    return Hive.box(HIVE_SONGS).values.toList() as List<Song>;
+  List<Song> getAllSongs() {
+    return Hive.box(HIVE_SONGS).values.toList().cast<Song>();
   }
 
-  Future<void> updateSongsSyncTime() async {
-    await Hive.box(HIVE_SYNC_TIME).put(HIVE_LAST_SONGS_SYNC, DateTime.now());
+  void updateSongsSyncTime() {
+    Hive.box(HIVE_SYNC_TIME).put(HIVE_LAST_SONGS_SYNC, DateTime.now());
   }
 
-  Future<void> updateUsersSyncTime() async {
-    await Hive.box(HIVE_SYNC_TIME).put(HIVE_LAST_USERS_SYNC, DateTime.now());
+  void updateUsersSyncTime() {
+    Hive.box(HIVE_SYNC_TIME).put(HIVE_LAST_USERS_SYNC, DateTime.now());
+  }
+
+  void saveAttachments(List<Attachment> attachments, String name) {
+    Hive.box(HIVE_ATTACHMENTS).put(name, attachments);
+  }
+
+  List<Attachment> getAttachmentsLocal() {
+    return Hive.box(HIVE_ATTACHMENTS).values.cast<Attachment>().toList();
+  }
+
+  List<Attachment> getAttachmentsLocalWithSong(String songName) {
+    return Hive.box(HIVE_ATTACHMENTS).get(songName);
   }
 
   Future<DateTime> getSongsLastSync() async {

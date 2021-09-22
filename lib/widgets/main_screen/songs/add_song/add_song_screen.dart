@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:djigibao_manager/database/entities/attachment.dart';
 import 'package:djigibao_manager/database/entities/song.dart';
 import 'package:djigibao_manager/navigation/destination.dart';
@@ -25,20 +27,35 @@ class _AddSongScreen extends State<AddSongScreen> {
       floatingActionButton: StreamBuilder<bool>(
         stream: addSongManager.stream,
         builder: (context, snapshot) {
-          return Visibility(
-            visible: snapshot.data ?? false,
-            child: FloatingActionButton(
-              onPressed: () async {
-                await addSongManager.addSong(Song(
-                    title: titleController.text,
-                    body: bodyController.text,
-                    author: authorController.text,
-                    created: DateTime.now(),
-                    lastModified: DateTime.now()));
-                navigation.navigateFromStartTo(MainDestination.Home);
-              },
-              child: Icon(Icons.add),
-            ),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: FloatingActionButton(
+                    onPressed: () async {
+                      await addSongManager.pickAttachment();
+                      setState(() {});
+                    },
+                    child: Transform.rotate(
+                        angle: pi / 2, child: Icon(Icons.attachment)),
+                  )),
+              Visibility(
+                visible: snapshot.data ?? false,
+                child: FloatingActionButton(
+                  onPressed: () async {
+                    await addSongManager.addSong(Song(
+                        title: titleController.text,
+                        body: bodyController.text,
+                        author: authorController.text,
+                        created: DateTime.now(),
+                        lastModified: DateTime.now()));
+                    navigation.navigateFromStartTo(MainDestination.Home);
+                  },
+                  child: Icon(Icons.add),
+                ),
+              )
+            ],
           );
         },
       ),
@@ -101,11 +118,11 @@ class _AddSongScreen extends State<AddSongScreen> {
                     controller: bodyController,
                   ),
                   SizedBox(
-                      height: 300,
-                      width: 150,
+                      height: 200,
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 20),
                         child: ListView.builder(
+                          padding: EdgeInsets.only(top: 0),
                           itemCount: addSongManager.attachments.length,
                           itemBuilder: (context, position) {
                             return AttachmentItem(
@@ -113,13 +130,7 @@ class _AddSongScreen extends State<AddSongScreen> {
                                     addSongManager.attachments[position]);
                           },
                         ),
-                      )),
-                  IconButton(
-                      onPressed: () async {
-                        await addSongManager.pickAttachment();
-                        setState(() {});
-                      },
-                      icon: Icon(Icons.attachment))
+                      ))
                 ],
               )
             ],
@@ -137,19 +148,25 @@ class AttachmentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      width: 100,
-      child: Row(
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 5),
+      child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Text(attachment.name,
                 style: TextStyle(
                   color: Colors.amber,
                 )),
           ),
-          Text(attachment.location)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Text(attachment.localLocation),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Text(attachment.remoteLocation),
+          )
         ],
       ),
     );

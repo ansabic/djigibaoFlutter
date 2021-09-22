@@ -75,7 +75,7 @@ class _SongItem extends State<SongItem> {
                         color: Colors.amber,
                       ),
                     ),
-                    Spacer(flex: 84),
+                    Spacer(flex: 70),
                     IconButton(
                         onPressed: () {
                           navigation.navigateFromSong(

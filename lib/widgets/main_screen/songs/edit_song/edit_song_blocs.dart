@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:djigibao_manager/database/entities/attachment.dart';
 import 'package:djigibao_manager/database/entities/song.dart';
 import 'package:djigibao_manager/database/local_repository.dart';
 import 'package:djigibao_manager/firebase/firestore/songs_repository_remote.dart';
@@ -6,6 +7,7 @@ import 'package:djigibao_manager/firebase/firestore/songs_repository_remote.dart
 class EditSongManager extends Cubit<bool> {
   final localRepository = LocalRepository();
   final remoteRepository = SongsRepositoryRemote();
+  late final List<Attachment> attachments;
 
   final String? oldName;
 
@@ -13,16 +15,16 @@ class EditSongManager extends Cubit<bool> {
 
   Future<void> editSong(Song song) async {
     if (song.title != oldName && oldName != null) {
-      await localRepository.removeSong(oldName ?? "");
-      await remoteRepository.removeSongRemote(oldName ?? "");
+      localRepository.removeSong(oldName ?? "");
+      remoteRepository.removeSongRemote(oldName ?? "");
     }
-    await localRepository.saveSong(song);
-    await remoteRepository.insertSongRemote(song);
+    localRepository.saveSong(song);
+    remoteRepository.insertSongRemote(song);
   }
 
-  Future<void> deleteSong() async {
-    await localRepository.removeSong(oldName ?? "");
-    await remoteRepository.removeSongRemote(oldName ?? "");
+  void deleteSong() {
+    localRepository.removeSong(oldName ?? "");
+    remoteRepository.removeSongRemote(oldName ?? "");
   }
 
   void check(String title, String author, String body) {
