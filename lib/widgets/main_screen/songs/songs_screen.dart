@@ -3,68 +3,74 @@ import 'package:djigibao_manager/database/entities/song.dart';
 import 'package:djigibao_manager/database/local_repository.dart';
 import 'package:djigibao_manager/navigation/destination.dart';
 import 'package:djigibao_manager/navigation/navigation.dart';
+import 'package:djigibao_manager/services/audio_player.dart';
 import 'package:djigibao_manager/widgets/main_screen/songs/songs_blocs.dart';
+import 'package:djigibao_manager/widgets/player/player.dart';
 import 'package:flutter/material.dart';
 
 class SongsScreen extends StatelessWidget {
   final songsManager = SongsManager();
-
-
 
   @override
   Widget build(BuildContext context) {
     final navigation = Navigation(context: context);
     return WillPopScope(
         child: Scaffold(
-            backgroundColor: Theme.of(context).backgroundColor,
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                navigation.navigateFromSong(
-                    destination: SongDestination.AddSong);
-              },
-              child: Icon(Icons.add),
-            ),
-            body: ListView.builder(
-              itemCount: songsManager.songs.length,
-              itemBuilder: (context, position) {
-                return SongItem(song: songsManager.songs[position] as Song);
-              },
-            )),
+          backgroundColor: Theme.of(context).backgroundColor,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              navigation.navigateFromSong(destination: SongDestination.AddSong);
+            },
+            child: Icon(Icons.add),
+          ),
+          body: ListView.builder(
+            itemCount: songsManager.songs.length,
+            itemBuilder: (context, position) {
+              return SongItem(
+                  song: songsManager.songs[position] as Song,
+                  songManager: songsManager);
+            },
+          ),
+        ),
         onWillPop: () async => false);
   }
 }
 
 class SongItem extends StatefulWidget {
   final Song song;
+  final SongsManager songManager;
 
-  SongItem({required this.song});
+  SongItem({required this.song, required this.songManager});
 
   @override
-  State<StatefulWidget> createState() => _SongItem(song: song);
-
-
+  State<StatefulWidget> createState() =>
+      _SongItem(song: song, songManager: songManager);
 }
 
 class _SongItem extends State<SongItem> {
   var detailsVisible = false;
+  var playerVisible = false;
   final Song song;
-  final player = SongsManager().player;
+  final SongsManager songManager;
+  late final Player player;
   final localRepository = LocalRepository();
 
-  _SongItem({required this.song});
-
+  _SongItem({required this.song, required this.songManager});
 
   @override
   void initState() {
     super.initState();
-    player.setLocation(localRepository
-            .getAttachmentsLocalWithSong(song.title)
-            .firstWhereOrNull((element) =>
-                element.type.contains("mp3") || element.type.contains("wav"))
-            ?.localLocation ??
-        "");
+    player = songManager.player;
+    final songAttachments = localRepository
+        .getAttachmentsLocalWithSong(song.title)
+        .firstWhereOrNull((element) =>
+            element.type.contains("mp3") || element.type.contains("wav"));
+    player.setLocation(songAttachments?.localLocation ?? "");
+    if (songAttachments != null)
+      playerVisible = true;
+    else
+      playerVisible = false;
   }
-
 
   @override
   void dispose() {
@@ -119,20 +125,14 @@ class _SongItem extends State<SongItem> {
                       child: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  song.author,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.amber,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                song.author,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.amber,
+                                ),
+                              )),
                           Text(
                             song.body,
                             textAlign: TextAlign.center,
@@ -141,15 +141,12 @@ class _SongItem extends State<SongItem> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10,horizontal: 5),
-                            child: Center(
-                              child: IconButton(
-                                icon: Icon(Icons.play_arrow),
-                                onPressed: () {
-                                  player.play();
-                                },)
-                            ),
-                          )
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 5),
+                              child: Visibility(
+                                visible: playerVisible,
+                                child: SongPlayer(song: song),
+                              )),
                         ],
                       )),
                 )
