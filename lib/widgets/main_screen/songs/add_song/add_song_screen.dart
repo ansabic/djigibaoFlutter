@@ -148,18 +148,29 @@ class AttachmentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5),
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Text(attachment.name,
-                style: TextStyle(
-                  color: Colors.amber,
-                )),
-          ),
-        ],
+    return Card(
+      color: Theme.of(context).backgroundColor,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 5),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Text(attachment.name,
+                  style: TextStyle(
+                    color: Colors.amber,
+                  )),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Text(attachment.localLocation),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Text(attachment.remoteLocation),
+            )
+          ],
+        ),
       ),
     );
   }

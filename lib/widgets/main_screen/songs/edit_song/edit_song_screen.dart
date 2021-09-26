@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:djigibao_manager/database/entities/song.dart';
 import 'package:djigibao_manager/navigation/destination.dart';
 import 'package:djigibao_manager/navigation/navigation.dart';
@@ -54,6 +56,16 @@ class _EditSongScreen extends State<EditSongScreen> {
                 },
                 child: Icon(Icons.delete)),
           ),
+          Padding(
+              padding: EdgeInsets.only(bottom: 20),
+              child: FloatingActionButton(
+                onPressed: () async {
+                  await editSongManager.pickAttachment();
+                  setState(() {});
+                },
+                child: Transform.rotate(
+                    angle: pi / 2, child: Icon(Icons.attachment)),
+              )),
           StreamBuilder<bool>(
             stream: editSongManager.stream,
             builder: (context, snapshot) {
@@ -134,8 +146,8 @@ class _EditSongScreen extends State<EditSongScreen> {
                         border: OutlineInputBorder(), hintText: "Song Body"),
                     controller: bodyController,
                   ),
-                  SizedBox(
-                      height: 200,
+                  Container(
+                      height: 300,
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 20),
                         child: ListView.builder(
