@@ -1,5 +1,6 @@
 import 'package:djigibao_manager/constants.dart';
 import 'package:djigibao_manager/database/entities/attachment.dart';
+import 'package:djigibao_manager/database/entities/event.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'entities/song.dart';
@@ -75,5 +76,17 @@ class LocalRepository {
 
   Future<DateTime> getUsersLastSync() async {
     return await Hive.box(HIVE_SYNC_TIME).get(HIVE_LAST_USERS_SYNC) as DateTime;
+  }
+
+  List<Event> getAllEvents() {
+    return (Hive.box(HIVE_EVENTS).values).cast<Event>().toList();
+  }
+
+  void saveEvent(Event event) {
+    Hive.box(HIVE_EVENTS).put(event.description, event);
+  }
+
+  Future<void> deleteEvent(Event event) async {
+    await Hive.box(HIVE_EVENTS).delete(event.description);
   }
 }
