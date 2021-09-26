@@ -56,7 +56,9 @@ class LocalRepository {
   }
 
   List<Attachment> getAttachmentsLocalWithSong(String songName) {
-    return Hive.box(HIVE_ATTACHMENTS).get(songName);
+    return (Hive.box(HIVE_ATTACHMENTS).get(songName) as List<dynamic>)
+        .map((e) => e as Attachment)
+        .toList();
   }
 
   Future<DateTime> getSongsLastSync() async {

@@ -3,6 +3,7 @@ import 'package:djigibao_manager/database/entities/attachment.dart';
 import 'package:djigibao_manager/database/entities/song.dart';
 import 'package:djigibao_manager/database/local_repository.dart';
 import 'package:djigibao_manager/firebase/firestore/songs_repository_remote.dart';
+import 'package:file_picker/file_picker.dart';
 
 class EditSongManager extends Cubit<bool> {
   final localRepository = LocalRepository();
@@ -19,6 +20,7 @@ class EditSongManager extends Cubit<bool> {
       remoteRepository.removeSongRemote(oldName ?? "");
     }
     localRepository.saveSong(song);
+    localRepository.saveAttachments(attachments, song.title);
     remoteRepository.insertSongRemote(song);
   }
 
@@ -32,5 +34,19 @@ class EditSongManager extends Cubit<bool> {
       emit(false);
     else
       emit(true);
+  }
+
+  Future<void> pickAttachment() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      final singleResult = result.files.single;
+      final newAttachment = Attachment(
+          name: singleResult.name,
+          localLocation: singleResult.path ?? "",
+          remoteLocation: "",
+          type: singleResult.extension ?? "");
+      attachments.add(newAttachment);
+    }
   }
 }
