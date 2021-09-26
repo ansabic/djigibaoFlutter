@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:djigibao_manager/database/entities/attachment.dart';
@@ -32,16 +33,31 @@ class _AddSongScreen extends State<AddSongScreen> {
             children: [
               Padding(
                   padding: EdgeInsets.symmetric(vertical: 20),
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      await addSongManager.pickAttachment();
-                      setState(() {});
-                    },
-                    child: Transform.rotate(
-                        angle: pi / 2, child: Icon(Icons.attachment)),
+                  child: Visibility(
+                    visible: !addSongManager.loadingVisibility,
+                    child: FloatingActionButton(
+                      onPressed: () async {
+                        setState(() {
+                          addSongManager.loadingVisibility = true;
+                        });
+                        await addSongManager.pickAttachment();
+                        setState(() {
+                          addSongManager.loadingVisibility = false;
+                        });
+                      },
+                      child: Transform.rotate(
+                          angle: pi / 2, child: Icon(Icons.attachment)),
+                    ),
                   )),
               Visibility(
-                visible: snapshot.data ?? false,
+                visible: addSongManager.loadingVisibility,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.amber),
+                ),
+              ),
+              Visibility(
+                visible:( snapshot.data ?? false) && !addSongManager.loadingVisibility,
                 child: FloatingActionButton(
                   onPressed: () async {
                     await addSongManager.addSong(Song(
@@ -127,7 +143,12 @@ class _AddSongScreen extends State<AddSongScreen> {
                           itemBuilder: (context, position) {
                             return AttachmentItem(
                                 attachment:
-                                    addSongManager.attachments[position]);
+                                    addSongManager.attachments[position],
+                            delete: (Attachment attachment) {
+                                  setState(() {
+                                    addSongManager.removeAttachment(attachment);
+                                  });
+                            },);
                           },
                         ),
                       ))
@@ -143,32 +164,56 @@ class _AddSongScreen extends State<AddSongScreen> {
 
 class AttachmentItem extends StatelessWidget {
   final Attachment attachment;
+  final Function delete;
 
-  AttachmentItem({required this.attachment});
+  AttachmentItem({required this.attachment, required this.delete});
 
   @override
   Widget build(BuildContext context) {
+    final visiblePicture = attachment.type.contains("jpg") ||
+        attachment.type.contains("png") ||
+        attachment.type.contains("jpeg") ||
+        attachment.type.contains("svg");
+    final visibleMusic = attachment.type.contains("mp3") ||
+        attachment.type.contains("wav");
     return Card(
-      color: Theme.of(context).backgroundColor,
+      color: Theme
+          .of(context)
+          .backgroundColor,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 5),
         child: Column(
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Text(attachment.name,
-                  style: TextStyle(
-                    color: Colors.amber,
-                  )),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(attachment.name,
+                      style: TextStyle(
+                        color: Colors.amber,
+                      )),
+                  IconButton(
+                    icon: Icon(Icons.highlight_remove),
+                    onPressed: () {
+                      delete(attachment);
+                    },
+                  )
+                ],
+              ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Text(attachment.localLocation),
+            Visibility(
+              visible: visibleMusic,
+              child: Center(
+                child: Icon(Icons.music_note),
+              ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Text(attachment.remoteLocation),
-            )
+            Visibility(
+                visible: visiblePicture,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  child: Image.file(File(attachment.localLocation)),
+                ))
           ],
         ),
       ),

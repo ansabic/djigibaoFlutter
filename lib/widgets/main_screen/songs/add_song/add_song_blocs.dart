@@ -10,6 +10,7 @@ import 'package:file_picker/file_picker.dart';
 class AddSongManager extends Cubit<bool> {
   AddSongManager() : super(false);
   final attachments = List<Attachment>.empty(growable: true);
+  var loadingVisibility = false;
 
   void check(String title, String author, String body) {
     if (title.isNotEmpty && author.isNotEmpty && body.isNotEmpty)
@@ -36,9 +37,12 @@ class AddSongManager extends Cubit<bool> {
     }
   }
 
+  void removeAttachment(Attachment attachment) {
+    attachments.remove(attachment);
+  }
+
   Future<void> pickAttachment() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
-
     if (result != null) {
       final singleResult = result.files.single;
       attachments.add(Attachment(

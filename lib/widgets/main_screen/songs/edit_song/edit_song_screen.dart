@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:djigibao_manager/database/entities/attachment.dart';
 import 'package:djigibao_manager/database/entities/song.dart';
 import 'package:djigibao_manager/navigation/destination.dart';
 import 'package:djigibao_manager/navigation/navigation.dart';
@@ -56,21 +57,29 @@ class _EditSongScreen extends State<EditSongScreen> {
                 },
                 child: Icon(Icons.delete)),
           ),
-          Padding(
-              padding: EdgeInsets.only(bottom: 20),
-              child: FloatingActionButton(
-                onPressed: () async {
-                  await editSongManager.pickAttachment();
-                  setState(() {});
-                },
-                child: Transform.rotate(
-                    angle: pi / 2, child: Icon(Icons.attachment)),
-              )),
+          Visibility(
+            visible: !editSongManager.loadingVisibility,
+            child: Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: FloatingActionButton(
+                  onPressed: () async {
+                    setState(() {
+                      editSongManager.loadingVisibility = true;
+                    });
+                    await editSongManager.pickAttachment();
+                    setState(() {
+                      editSongManager.loadingVisibility = false;
+                    });
+                  },
+                  child: Transform.rotate(
+                      angle: pi / 2, child: Icon(Icons.attachment)),
+                )),
+          ),
           StreamBuilder<bool>(
             stream: editSongManager.stream,
             builder: (context, snapshot) {
               return Visibility(
-                visible: snapshot.data ?? true,
+                visible: (snapshot.data ?? true) && !editSongManager.loadingVisibility,
                 child: FloatingActionButton(
                   onPressed: () async {
                     await editSongManager.editSong(Song(
@@ -156,7 +165,12 @@ class _EditSongScreen extends State<EditSongScreen> {
                           itemBuilder: (context, position) {
                             return AttachmentItem(
                                 attachment:
-                                    editSongManager.attachments[position]);
+                                    editSongManager.attachments[position],
+                            delete: (Attachment attachment) {
+                              setState(() {
+                                editSongManager.removeAttachment(attachment);
+                              });
+                            });
                           },
                         ),
                       ))

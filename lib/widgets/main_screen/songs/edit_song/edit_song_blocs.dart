@@ -12,6 +12,11 @@ class EditSongManager extends Cubit<bool> {
   final remoteAttachmentRepository = AttachmentRepositoryRemote();
   late final List<Attachment> attachments;
 
+  final newAttachments = List<Attachment>.empty(growable: true);
+  final attachmentsToDelete = List<Attachment>.empty(growable: true);
+
+  var loadingVisibility = false;
+
   final String? oldName;
 
   EditSongManager({required this.oldName}) : super(true);
@@ -24,16 +29,22 @@ class EditSongManager extends Cubit<bool> {
     localRepository.saveSong(song);
     localRepository.saveAttachments(attachments, song.title);
     remoteRepository.insertSongRemote(song);
+    newAttachments.forEach((element) {
+      remoteAttachmentRepository.uploadFile(element, song.title);
+    });
+    attachmentsToDelete.forEach((element) {
+      if(!newAttachments.contains(element))
+        remoteAttachmentRepository.deleteFile(oldName??"", element);
+    });
   }
 
-  void deleteSong() async{
+  void deleteSong() async {
     await localRepository.removeSong(oldName ?? "");
     remoteRepository.removeSongRemote(oldName ?? "");
     final relatedAttachments = localRepository.getAttachmentsLocalWithSong(oldName ?? "");
     localRepository.deleteAttachmentsForSong(oldName ?? "");
     relatedAttachments.forEach((element) {
       remoteAttachmentRepository.deleteFile(oldName ?? "",element);
-
     });
   }
 
@@ -44,6 +55,13 @@ class EditSongManager extends Cubit<bool> {
       emit(true);
   }
 
+  void removeAttachment(Attachment attachment) {
+    attachments.remove(attachment);
+    if(newAttachments.contains(attachment))
+      newAttachments.remove(attachment);
+    attachmentsToDelete.add(attachment);
+  }
+
   Future<void> pickAttachment() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
@@ -52,9 +70,9 @@ class EditSongManager extends Cubit<bool> {
       final newAttachment = Attachment(
           name: singleResult.name,
           localLocation: singleResult.path ?? "",
-          remoteLocation: "",
           type: singleResult.extension ?? "");
       attachments.add(newAttachment);
+      newAttachments.add(newAttachment);
     }
   }
 }
