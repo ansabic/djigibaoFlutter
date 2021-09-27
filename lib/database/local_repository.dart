@@ -1,6 +1,7 @@
 import 'package:djigibao_manager/constants.dart';
 import 'package:djigibao_manager/database/entities/attachment.dart';
 import 'package:djigibao_manager/database/entities/event.dart';
+import 'package:djigibao_manager/database/entities/topic.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'entities/song.dart';
@@ -15,9 +16,12 @@ class LocalRepository {
       return "";
   }
 
-  Future<User> getUser() async {
-    final box = await Hive.openBox(HIVE_USER);
-    return await box.get(HIVE_USER) as User;
+  User getUser() {
+    return Hive.box(HIVE_USER).get(HIVE_USER);
+  }
+
+  List<User> getUsers() {
+    return Hive.box(HIVE_USERS).values.toList().cast<User>();
   }
 
   void savePassword(String password) {
@@ -88,5 +92,17 @@ class LocalRepository {
 
   Future<void> deleteEvent(Event event) async {
     await Hive.box(HIVE_EVENTS).delete(event.description);
+  }
+
+  List<Topic> getAllTopics() {
+    return (Hive.box(HIVE_TOPICS).values).cast<Topic>().toList();
+  }
+
+  Future<void> saveTopic(Topic topic) async {
+    await Hive.box(HIVE_TOPICS).put(topic.name, topic);
+  }
+
+  Future<void> deleteTopic(Topic topic) async {
+    await Hive.box(HIVE_TOPICS).delete(topic.name);
   }
 }

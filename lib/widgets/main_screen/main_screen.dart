@@ -6,8 +6,8 @@ import 'package:djigibao_manager/widgets/main_screen/songs/songs_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'account/account_screen.dart';
 import 'events/events_screen.dart';
+import 'topics/topics.dart';
 
 class MainScreen extends StatelessWidget {
   final mainScreenManager = MainScreenManager();
@@ -60,7 +60,7 @@ class MainScreenSwitch extends StatelessWidget {
       case HomeDestination.Settings:
         return SettingsScreen();
       case HomeDestination.Topics:
-        return AccountScreen();
+        return Topics();
     }
   }
 }

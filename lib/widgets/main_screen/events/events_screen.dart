@@ -70,74 +70,71 @@ class _EventsScreen extends State<EventsScreen> {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 50, bottom: 5),
-                  child: Center(
-                    child: Text(
-                      "Events",
-                      style: TextStyle(color: Colors.amber, fontSize: 18),
-                    ),
+                  padding: EdgeInsets.only(top: 20),
+                  child: TableCalendar(
+                    startingDayOfWeek: StartingDayOfWeek.monday,
+                    focusedDay: manager.focusedDay,
+                    firstDay: DateTime.now().subtract(Duration(days: 730)),
+                    lastDay: DateTime.now().add(Duration(days: 730)),
+                    selectedDayPredicate: (day) =>
+                        isSameDay(day, manager.selectedDay),
+                    onRangeSelected: onRangeSelected,
+                    rangeSelectionMode: manager.rangeSelectionMode,
+                    rangeStartDay: manager.rangeStart,
+                    rangeEndDay: manager.rangeEnd,
+                    onDaySelected: onDaySelected,
+                    onPageChanged: (focusedDay) {
+                      setState(() {
+                        manager.focusedDay = focusedDay;
+                        manager.showNewPage();
+                      });
+                    },
+                    calendarFormat: manager.calendarFormat,
+                    onFormatChanged: (format) {
+                      setState(() {
+                        manager.calendarFormat = format;
+                        manager.showNewFormat();
+                      });
+                    },
+                    calendarStyle: CalendarStyle(
+                        rangeHighlightColor: Colors.white12,
+                        outsideDaysVisible: false,
+                        selectedDecoration: BoxDecoration(
+                            color: Colors.amber,
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 2, color: Colors.amber)),
+                        holidayDecoration: BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 2, color: Colors.red)),
+                        rangeStartDecoration: BoxDecoration(
+                            color: Colors.white30,
+                            shape: BoxShape.circle,
+                            border:
+                                Border.all(width: 2, color: Colors.white30)),
+                        rangeEndDecoration: BoxDecoration(
+                            color: Colors.white30,
+                            shape: BoxShape.circle,
+                            border:
+                                Border.all(width: 2, color: Colors.white30)),
+                        todayDecoration: BoxDecoration(
+                            color: Colors.white12,
+                            shape: BoxShape.circle,
+                            border:
+                                Border.all(width: 2, color: Colors.white12)),
+                        markerDecoration: BoxDecoration(
+                            color: Colors.amberAccent,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                width: 1, color: Colors.amberAccent))),
+                    eventLoader: (day) {
+                      final result = manager.localRepository
+                          .getAllEvents()
+                          .where((element) => element.dateTime == day)
+                          .toList();
+                      return result;
+                    },
                   ),
-                ),
-                TableCalendar(
-                  startingDayOfWeek: StartingDayOfWeek.monday,
-                  focusedDay: manager.focusedDay,
-                  firstDay: DateTime.now().subtract(Duration(days: 730)),
-                  lastDay: DateTime.now().add(Duration(days: 730)),
-                  selectedDayPredicate: (day) =>
-                      isSameDay(day, manager.selectedDay),
-                  onRangeSelected: onRangeSelected,
-                  rangeSelectionMode: manager.rangeSelectionMode,
-                  rangeStartDay: manager.rangeStart,
-                  rangeEndDay: manager.rangeEnd,
-                  onDaySelected: onDaySelected,
-                  onPageChanged: (focusedDay) {
-                    setState(() {
-                      manager.focusedDay = focusedDay;
-                      manager.showNewPage();
-                    });
-                  },
-                  calendarFormat: manager.calendarFormat,
-                  onFormatChanged: (format) {
-                    setState(() {
-                      manager.calendarFormat = format;
-                      manager.showNewFormat();
-                    });
-                  },
-                  calendarStyle: CalendarStyle(
-                      rangeHighlightColor: Colors.white12,
-                      outsideDaysVisible: false,
-                      selectedDecoration: BoxDecoration(
-                          color: Colors.amber,
-                          shape: BoxShape.circle,
-                          border: Border.all(width: 2, color: Colors.amber)),
-                      holidayDecoration: BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                          border: Border.all(width: 2, color: Colors.red)),
-                      rangeStartDecoration: BoxDecoration(
-                          color: Colors.white30,
-                          shape: BoxShape.circle,
-                          border: Border.all(width: 2, color: Colors.white30)),
-                      rangeEndDecoration: BoxDecoration(
-                          color: Colors.white30,
-                          shape: BoxShape.circle,
-                          border: Border.all(width: 2, color: Colors.white30)),
-                      todayDecoration: BoxDecoration(
-                          color: Colors.white12,
-                          shape: BoxShape.circle,
-                          border: Border.all(width: 2, color: Colors.white12)),
-                      markerDecoration: BoxDecoration(
-                          color: Colors.amberAccent,
-                          shape: BoxShape.circle,
-                          border:
-                              Border.all(width: 1, color: Colors.amberAccent))),
-                  eventLoader: (day) {
-                    final result = manager.localRepository
-                        .getAllEvents()
-                        .where((element) => element.dateTime == day)
-                        .toList();
-                    return result;
-                  },
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -189,7 +186,7 @@ class _EventsScreen extends State<EventsScreen> {
                                             setState(() {
                                               manager.editEventSolve(
                                                   item, true);
-                                              manager.showAllEvents();
+                                              manager.showNewPage();
                                             });
                                           })),
                                 ),
@@ -205,7 +202,7 @@ class _EventsScreen extends State<EventsScreen> {
                                             setState(() {
                                               manager.editEventSolve(
                                                   item, false);
-                                              manager.showAllEvents();
+                                              manager.showNewPage();
                                             });
                                           })),
                                 ),

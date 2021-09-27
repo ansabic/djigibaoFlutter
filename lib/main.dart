@@ -1,3 +1,4 @@
+import 'package:djigibao_manager/constants.dart';
 import 'package:djigibao_manager/database/hiveDatabase.dart';
 import 'package:djigibao_manager/firebase/base.dart';
 import 'package:djigibao_manager/firebase/firestore/songs_repository_remote.dart';
@@ -5,11 +6,15 @@ import 'package:djigibao_manager/widgets/login_screen/login_screen.dart';
 import 'package:djigibao_manager/widgets/main_screen/main_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
+
+import 'database/entities/user.dart';
 
 void main() async {
   final firebase = FirebaseBase();
   firebase.initFirebase();
-  final username = await initHive();
+  await initHive();
+  final username = (Hive.box(HIVE_USER).get(HIVE_USER) as User).name;
   runApp(MyApp(username: username));
 }
 
