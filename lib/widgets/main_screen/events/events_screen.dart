@@ -37,6 +37,7 @@ class _EventsScreen extends State<EventsScreen> {
       manager.rangeStart = start;
       manager.rangeEnd = end;
       manager.rangeSelectionMode = RangeSelectionMode.toggledOn;
+      if (start != null && end != null) manager.showRangeEvents(start, end);
     });
   }
 
@@ -52,28 +53,29 @@ class _EventsScreen extends State<EventsScreen> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Theme.of(context).backgroundColor,
       floatingActionButton: Visibility(
-        visible: manager.addCalendarVisibility,
-        child: FloatingActionButton(
-          onPressed: () {
-            setState(() {
-              manager.addCalendarVisibility = false;
-              manager.dialogVisibility = true;
-            });
-          },
-          backgroundColor: Colors.amber,
-          child: Icon(Icons.add),
-        ),
-      ),
+          visible: manager.addCalendarVisibility,
+          child: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                manager.addCalendarVisibility = false;
+                manager.dialogVisibility = true;
+              });
+            },
+            backgroundColor: Colors.amber,
+            child: Icon(Icons.add),
+          )),
       body: Stack(
         children: [
           SingleChildScrollView(
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 50, bottom: 10),
-                  child: Text(
-                    "Events",
-                    style: TextStyle(color: Colors.amber, fontSize: 18),
+                  padding: EdgeInsets.only(top: 50, bottom: 5),
+                  child: Center(
+                    child: Text(
+                      "Events",
+                      style: TextStyle(color: Colors.amber, fontSize: 18),
+                    ),
                   ),
                 ),
                 TableCalendar(
@@ -89,12 +91,16 @@ class _EventsScreen extends State<EventsScreen> {
                   rangeEndDay: manager.rangeEnd,
                   onDaySelected: onDaySelected,
                   onPageChanged: (focusedDay) {
-                    manager.focusedDay = focusedDay;
+                    setState(() {
+                      manager.focusedDay = focusedDay;
+                      manager.showNewPage();
+                    });
                   },
                   calendarFormat: manager.calendarFormat,
                   onFormatChanged: (format) {
                     setState(() {
                       manager.calendarFormat = format;
+                      manager.showNewFormat();
                     });
                   },
                   calendarStyle: CalendarStyle(
@@ -128,45 +134,115 @@ class _EventsScreen extends State<EventsScreen> {
                   eventLoader: (day) {
                     final result = manager.localRepository
                         .getAllEvents()
-                        .where((element) => element.dateTime.day == day.day)
+                        .where((element) => element.dateTime == day)
                         .toList();
                     return result;
                   },
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: SizedBox(
-                      height: 400,
-                      child: ListView.builder(
-                        padding: EdgeInsets.only(top: 0),
-                        itemCount: manager.events.length,
-                        itemBuilder: (context, position) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 5),
-                            child: Card(
-                              color: Theme.of(context).backgroundColor,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 10),
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: EdgeInsets.only(top: 0),
+                    itemCount: manager.events.length,
+                    itemBuilder: (context, position) {
+                      final item = manager.events[position];
+                      Color color = Theme.of(context).backgroundColor;
+                      if (item.eventType == EventType.Task && item.solved)
+                        color = Colors.lightGreen;
+                      else if (item.eventType == EventType.Task && !item.solved)
+                        color = Colors.orange;
+                      else if (item.eventType != EventType.Task &&
+                          item.dateTime.isBefore(DateTime.now()))
+                        color = Colors.red;
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        child: Card(
+                          color: color,
+                          child: Container(
+                            height: 40,
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(3),
                                     child: Text(
-                                        manager.events[position].description ??
-                                            ""),
+                                      eventTypeToValue(item.eventType),
+                                      style: TextStyle(
+                                        fontSize: 8,
+                                      ),
+                                    ),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text(manager
-                                            .events[position].dateTime
-                                            .toString() ??
-                                        ""),
-                                  )
-                                ],
-                              ),
+                                ),
+                                Visibility(
+                                  visible: !item.solved &&
+                                      item.eventType == EventType.Task,
+                                  child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: IconButton(
+                                          icon: Icon(Icons.check,
+                                              color: Colors.amber),
+                                          onPressed: () {
+                                            setState(() {
+                                              manager.editEventSolve(
+                                                  item, true);
+                                              manager.showAllEvents();
+                                            });
+                                          })),
+                                ),
+                                Visibility(
+                                  visible: item.solved &&
+                                      item.eventType == EventType.Task,
+                                  child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: IconButton(
+                                          icon: Icon(Icons.cancel_outlined,
+                                              color: Colors.amber),
+                                          onPressed: () {
+                                            setState(() {
+                                              manager.editEventSolve(
+                                                  item, false);
+                                              manager.showAllEvents();
+                                            });
+                                          })),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 5),
+                                    child: Text(item.description),
+                                  ),
+                                ),
+                                Align(
+                                    alignment: Alignment.centerRight,
+                                    child: IconButton(
+                                        icon: Icon(Icons.delete,
+                                            color: Colors.amber),
+                                        onPressed: () async {
+                                          await manager.removeEvent(item);
+                                          setState(() {
+                                            manager.showAllEvents();
+                                          });
+                                        })),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 5),
+                                    child: Text(
+                                        "${item.dateTime.day}.${item.dateTime.month}.${item.dateTime.year}."),
+                                  ),
+                                )
+                              ],
                             ),
-                          );
-                        },
-                      )),
-                )
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),
