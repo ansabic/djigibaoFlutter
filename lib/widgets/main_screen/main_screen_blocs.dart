@@ -13,10 +13,10 @@ class MainScreenManager extends Cubit<HomeDestination> {
         emit(HomeDestination.Events);
         break;
       case 2:
-        emit(HomeDestination.Settings);
+        emit(HomeDestination.Topics);
         break;
       case 3:
-        emit(HomeDestination.Account);
+        emit(HomeDestination.Settings);
         break;
     }
   }

@@ -6,8 +6,10 @@ import 'package:table_calendar/table_calendar.dart';
 class EventsManager {
   final localRepository = LocalRepository();
 
-  DateTime focusedDay = DateTime.now();
-  DateTime? selectedDay = DateTime.now();
+  DateTime focusedDay = DateTime.utc(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  DateTime selectedDay = DateTime.utc(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   DateTime? rangeStart;
   DateTime? rangeEnd;
@@ -51,20 +53,21 @@ class EventsManager {
   }
 
   void showNewFormat() {
-    DateTime firstDay =
-        focusedDay.subtract(Duration(days: focusedDay.weekday - 1));
+    DateTime firstDay;
+    firstDay = focusedDay.subtract(Duration(days: focusedDay.weekday - 1));
     switch (calendarFormat) {
       case CalendarFormat.month:
         showAllEvents();
         break;
       case CalendarFormat.twoWeeks:
-        if (getWeekInYear(focusedDay) % 2 != 0)
+        if (getWeekInYear(focusedDay.add(Duration(days: 1))) % 2 != 0)
           firstDay = firstDay.subtract(Duration(days: 7));
         final afterTwoWeeks = firstDay.add(Duration(days: 13));
         showRangeEvents(firstDay, afterTwoWeeks);
         break;
       case CalendarFormat.week:
         final afterWeek = firstDay.add(Duration(days: 6));
+        print(focusedDay.toString());
         showRangeEvents(firstDay, afterWeek);
         break;
     }
@@ -73,8 +76,6 @@ class EventsManager {
   void showNewPage() {
     DateTime firstDay =
         focusedDay.subtract(Duration(days: focusedDay.weekday - 1));
-    final afterTwoWeeks = firstDay.add(Duration(days: 13));
-    final afterWeek = firstDay.add(Duration(days: 6));
     switch (calendarFormat) {
       case CalendarFormat.month:
         events = localRepository
@@ -85,6 +86,9 @@ class EventsManager {
             .toList();
         break;
       case CalendarFormat.twoWeeks:
+        if (getWeekInYear(focusedDay.add(Duration(days: 1))) % 2 != 0)
+          firstDay = firstDay.subtract(Duration(days: 7));
+        final afterTwoWeeks = firstDay.add(Duration(days: 13));
         events = localRepository
             .getAllEvents()
             .where((element) =>
@@ -95,6 +99,7 @@ class EventsManager {
             .toList();
         break;
       case CalendarFormat.week:
+        final afterWeek = firstDay.add(Duration(days: 6));
         events = localRepository
             .getAllEvents()
             .where((element) =>

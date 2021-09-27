@@ -3,8 +3,8 @@ import 'package:djigibao_manager/navigation/destination.dart';
 import 'package:djigibao_manager/widgets/main_screen/main_screen_blocs.dart';
 import 'package:djigibao_manager/widgets/main_screen/settings/settings_screen.dart';
 import 'package:djigibao_manager/widgets/main_screen/songs/songs_screen.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'account/account_screen.dart';
 import 'events/events_screen.dart';
@@ -37,8 +37,8 @@ class MainScreen extends StatelessWidget {
                 Icons.list,
               ),
               Icon(Icons.event),
-              Icon(Icons.settings),
-              Icon(Icons.account_circle)
+              Icon(Icons.people),
+              Icon(Icons.settings)
             ],
           ),
         ));
@@ -59,7 +59,7 @@ class MainScreenSwitch extends StatelessWidget {
         return EventsScreen();
       case HomeDestination.Settings:
         return SettingsScreen();
-      case HomeDestination.Account:
+      case HomeDestination.Topics:
         return AccountScreen();
     }
   }

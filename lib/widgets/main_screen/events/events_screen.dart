@@ -32,7 +32,7 @@ class _EventsScreen extends State<EventsScreen> {
 
   void onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
     setState(() {
-      manager.selectedDay = null;
+      manager.selectedDay = DateTime.now();
       manager.focusedDay = focusedDay;
       manager.rangeStart = start;
       manager.rangeEnd = end;
