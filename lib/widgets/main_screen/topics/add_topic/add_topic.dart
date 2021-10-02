@@ -33,7 +33,8 @@ class _AddTopic extends State<AddTopic> {
                 name: manager.name,
                 type: TopicType.Common,
                 users: manager.users,
-                solved: false));
+                usersSolved: List.empty(),
+                messages: List.empty()));
             navigation.navigateFromStartTo(MainDestination.Home);
           },
           backgroundColor: Colors.amber,

@@ -19,7 +19,7 @@ String topicTypeToValue(TopicType topicType) {
   }
 }
 
-TopicType eventFromValue(String value) {
+TopicType topicTypeFromValue(String value) {
   switch (value) {
     case "Task":
       return TopicType.Task;

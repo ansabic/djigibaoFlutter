@@ -2,6 +2,7 @@ import 'package:djigibao_manager/constants.dart';
 import 'package:djigibao_manager/database/entities/attachment.dart';
 import 'package:djigibao_manager/database/entities/event.dart';
 import 'package:djigibao_manager/database/entities/event_type.dart';
+import 'package:djigibao_manager/database/entities/message.dart';
 import 'package:djigibao_manager/database/entities/role.dart';
 import 'package:djigibao_manager/database/entities/song.dart';
 import 'package:djigibao_manager/database/entities/topic.dart';
@@ -20,6 +21,7 @@ Future<String> initHive() async {
   Hive.registerAdapter(EventAdapter());
   Hive.registerAdapter(TopicTypeAdapter());
   Hive.registerAdapter(TopicAdapter());
+  Hive.registerAdapter(MessageAdapter());
 
   await Hive.openBox(HIVE_USER);
   await Hive.openBox(HIVE_USERS);
@@ -28,6 +30,7 @@ Future<String> initHive() async {
   await Hive.openBox(HIVE_ATTACHMENTS);
   await Hive.openBox(HIVE_EVENTS);
   await Hive.openBox(HIVE_TOPICS);
+  await Hive.openBox(HIVE_MESSAGES);
 
   final result = await Hive.openBox(HIVE_USER);
   if (result.isNotEmpty)

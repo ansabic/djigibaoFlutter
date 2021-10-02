@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:djigibao_manager/firebase/realtime_database.dart';
 import 'package:djigibao_manager/navigation/destination.dart';
 import 'package:djigibao_manager/widgets/main_screen/main_screen_blocs.dart';
 import 'package:djigibao_manager/widgets/main_screen/settings/settings_screen.dart';
@@ -14,6 +15,7 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TopicsDatabase().init();
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(

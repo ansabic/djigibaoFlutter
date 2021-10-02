@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "370423933574",
+    "firebase_url": "https://djigibao-manager-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "djigibao-manager",
     "storage_bucket": "djigibao-manager.appspot.com"
   },

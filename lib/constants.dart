@@ -1,3 +1,5 @@
+
+
 const APP_NAME = "Djigibao Manager";
 const FIRESTORE_USERS = "users";
 const FIRESTORE_SONGS = "songs";
@@ -8,6 +10,7 @@ const HIVE_SONGS = "songs";
 const HIVE_ATTACHMENTS = "attachments";
 const HIVE_EVENTS = "events";
 const HIVE_TOPICS = "topics";
+const HIVE_MESSAGES = "messages";
 
 const HIVE_PASSWORD = "password";
 const HIVE_LAST_SONGS_SYNC = "last_songs_sync";

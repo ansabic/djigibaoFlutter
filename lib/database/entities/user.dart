@@ -13,8 +13,8 @@ class User {
   User({required this.name, required this.role});
 
   User.fromJson(Map<String, dynamic> json)
-      : name = json["name"],
-        role = roleFromValue(json["role"]);
+      : name = json["name"].toString(),
+        role = roleFromValue(json["role"].toString());
 
   Map<String, dynamic> toJson() => {"name": name, "role": roleToValue(role)};
 }
