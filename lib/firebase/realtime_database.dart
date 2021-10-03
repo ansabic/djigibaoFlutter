@@ -29,37 +29,21 @@ class TopicsDatabase {
     await database.goOnline();
   }
 
-  Future<List<Topic>> getAllTopics() async {
-    final result = await database.reference().child("topics").get();
-    final parsedResult = (Map<String, dynamic>.from(result.value))
-        .values
-        .map((value) => Topic.fromJson(Map<String, dynamic>.from(value)))
-        .toList(growable: true);
-    printTopics(parsedResult);
-    return parsedResult;
-  }
+  Future<List<Message>?> getAllMessages(Topic topic) async {
+    final result = await database.reference().child("topics").child(topic.name).once();
+     return Topic.fromJson((Map<String, dynamic>.from(result.value))).messages;
 
-  Future<List<Message>> getAllMessages(Topic topic) async {
-    final result =
-        await database.reference().child("topics").child(topic.name).once();
-    return Topic.fromJson((Map<String, dynamic>.from(result.value))).messages;
   }
 
   void addOrChangeTopic(Topic topic) async {
-    await database
-        .reference()
-        .child("topics")
-        .child(topic.name)
-        .set(topic.toJson());
+    await database.reference().child("topics").child(topic.name).set(topic.toJson());
   }
 
-  void addMessage(Topic topic, Message message) async {
-    await database
-        .reference()
-        .child("topics")
+  Future<void> addMessage(Topic topic, Message message) async {
+    await database.reference().child("topics")
         .child(topic.name)
         .child("messages")
-        .child(message.created.toString())
+        .child(message.created.millisecondsSinceEpoch.toString())
         .set(message.toJson());
   }
 }

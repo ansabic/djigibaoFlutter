@@ -13,11 +13,11 @@ class Topic {
   @HiveField(1)
   final TopicType type;
   @HiveField(2)
-  final List<User> users;
+  final List<User>? users;
   @HiveField(3)
-  final List<User> usersSolved;
+  final List<User>? usersSolved;
   @HiveField(4)
-  final List<Message> messages;
+  final List<Message>? messages;
 
   Topic(
       {required this.name,
@@ -29,37 +29,31 @@ class Topic {
   Topic.fromJson(Map<String, dynamic> json)
       : name = json["name"],
         type = topicTypeFromValue(json["type"]),
-        users = (Map<String, dynamic>.from(json["users"]).values)
-            .map((e) => User.fromJson(Map<String, dynamic>.from(e)))
+        users = (Map<String,dynamic>.from(json["users"]??{}).values)
+            .map((e) => User.fromJson(Map<String,dynamic>.from(e)))
             .toList(),
-        usersSolved = (Map<String, dynamic>.from(json["usersSolved"]).values)
-            .map((e) => User.fromJson(Map<String, dynamic>.from(e)))
+        usersSolved = (Map<String,dynamic>.from(json["usersSolved"]??{}).values )
+            .map((e) => User.fromJson(Map<String,dynamic>.from(e)))
             .toList(),
-        messages = (Map<String, dynamic>.from(json["messages"]).values)
-            .map((e) => Message.fromJson(Map<String, dynamic>.from(e)))
+        messages =  (Map<String,dynamic>.from(json["messages"]??{}).values)
+            .map((e) => Message.fromJson(Map<String,dynamic>.from(e)))
             .toList();
 
   Map<String, dynamic> toJson() => {
         "name": name,
         "type": topicTypeToValue(type),
-        "users": users
-            .asMap()
-            .map((key, value) => MapEntry(value.name, value.toJson())),
-        "usersSolved": usersSolved
-            .asMap()
-            .map((key, value) => MapEntry(value.name, value.toJson())),
-        "messages": messages.asMap().map((key, value) => MapEntry(
-            Timestamp.fromDate(value.created).millisecondsSinceEpoch.toString(),
-            value.toJson())),
+        "users": users?.asMap().map((key, value) => MapEntry(value.name, value.toJson())),
+        "usersSolved": usersSolved?.asMap().map((key, value) => MapEntry(value.name, value.toJson())),
+        "messages" : messages?.asMap().map((key, value) => MapEntry(Timestamp.fromDate(value.created).millisecondsSinceEpoch.toString(), value.toJson())),
       };
-}
 
+}
 void printTopics(List<Topic> topics) {
   topics.forEach((element) {
     print("NAME: ${element.name} \n");
     print("TYPE: ${topicTypeToValue(element.type)} \n");
     print("MESSAGES: [ \n");
-    element.messages.forEach((element) {
+    element.messages?.forEach((element) {
       print("-------------------------------------------- \n");
       print("MESSAGE_CREATED: ${element.created.toString()}\n");
       print("MESSAGE_WRITTEN_BY_NAME: ${element.writtenBy.name}\n");
@@ -69,7 +63,7 @@ void printTopics(List<Topic> topics) {
     });
     print("] \n");
     print("USERS: [ \n");
-    element.users.forEach((element) {
+    element.users?.forEach((element) {
       print("-------------------------------------------- \n");
       print("USER_NAME: ${element.name}");
       print("USER_ROLE: ${element.role}");
@@ -77,7 +71,7 @@ void printTopics(List<Topic> topics) {
     });
     print("] \n");
     print("USERS_SOLVED: [ \n");
-    element.usersSolved.forEach((element) {
+    element.usersSolved?.forEach((element) {
       print("-------------------------------------------- \n");
       print("USER_NAME: ${element.name}");
       print("USER_ROLE: ${element.role}");

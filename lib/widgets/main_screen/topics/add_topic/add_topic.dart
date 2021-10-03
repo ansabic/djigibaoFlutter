@@ -1,6 +1,5 @@
 import 'package:djigibao_manager/database/entities/topic.dart';
 import 'package:djigibao_manager/database/entities/topic_type.dart';
-import 'package:djigibao_manager/navigation/destination.dart';
 import 'package:djigibao_manager/navigation/navigation.dart';
 import 'package:djigibao_manager/widgets/main_screen/topics/add_topic/add_topic_bloc.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +34,7 @@ class _AddTopic extends State<AddTopic> {
                 users: manager.users,
                 usersSolved: List.empty(),
                 messages: List.empty()));
-            navigation.navigateFromStartTo(MainDestination.Home);
+            navigation.goBack();
           },
           backgroundColor: Colors.amber,
           child: Icon(Icons.add),

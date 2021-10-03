@@ -13,20 +13,15 @@ class Message {
   @HiveField(2)
   final DateTime created;
 
+
   Message(
       {required this.writtenBy, required this.content, required this.created});
 
-  Map<String, dynamic> toJson() => {
-        "writtenBy": {writtenBy.name: writtenBy.toJson()},
-        "content": content,
-        "created": Timestamp.fromDate(created).millisecondsSinceEpoch.toString()
-      };
+  Map<String, dynamic> toJson() =>
+      {"writtenBy": {writtenBy.name: writtenBy.toJson()}, "content": content, "created": Timestamp.fromDate(created).millisecondsSinceEpoch.toString()};
 
   Message.fromJson(Map<String, dynamic> json)
-      : writtenBy = User.fromJson(Map<String, dynamic>.from(
-            Map<String, dynamic>.from(json["writtenBy"]).values.first)),
+      : writtenBy = User.fromJson(Map<String,dynamic>.from(Map<String, dynamic>.from(json["writtenBy"]).values.first)),
         content = json["content"],
-        created =
-            Timestamp.fromMillisecondsSinceEpoch(int.parse(json["created"]))
-                .toDate();
+        created = Timestamp.fromMillisecondsSinceEpoch(int.parse(json["created"])).toDate();
 }
