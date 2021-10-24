@@ -33,7 +33,8 @@ class _AddTopic extends State<AddTopic> {
                 type: TopicType.Common,
                 users: manager.users,
                 usersSolved: List.empty(),
-                messages: List.empty()));
+                messages: List.empty(),
+                created: DateTime.now()));
             navigation.goBack();
           },
           backgroundColor: Colors.amber,

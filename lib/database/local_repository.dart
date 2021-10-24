@@ -1,6 +1,7 @@
 import 'package:djigibao_manager/constants.dart';
 import 'package:djigibao_manager/database/entities/attachment.dart';
 import 'package:djigibao_manager/database/entities/event.dart';
+import 'package:djigibao_manager/database/entities/message.dart';
 import 'package:djigibao_manager/database/entities/topic.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -104,5 +105,30 @@ class LocalRepository {
 
   Future<void> deleteTopic(Topic topic) async {
     await Hive.box(HIVE_TOPICS).delete(topic.name);
+  }
+
+  List<Message> getAllMessages() {
+    return (Hive.box(HIVE_MESSAGES).values).cast<Message>().toList();
+  }
+
+  void saveMessage(Message message, String topic) async {
+    await Hive.box(HIVE_MESSAGES).put(message.created.toString(), message);
+    await Hive.box(HIVE_MESSAGE_TOPIC_RELATION)
+        .add(Map.fromEntries([MapEntry(topic, message.created.toString())]));
+  }
+
+  List<Message> getMessagesOfTopic(String topic) {
+    List<Message> messages = List<Message>.empty(growable: true);
+    List<Map<String, String>> newRelations = List.empty(growable: true);
+    Hive.box(HIVE_MESSAGE_TOPIC_RELATION).values.forEach((element) {
+      newRelations.add(Map.from(element));
+    });
+    newRelations.forEach((element) {
+      if (element.keys.contains(topic))
+        messages.add(Hive.box(HIVE_MESSAGES).get(element[topic]));
+    });
+    messages.sort((a, b) => b.created.millisecondsSinceEpoch
+        .compareTo(a.created.millisecondsSinceEpoch));
+    return messages;
   }
 }

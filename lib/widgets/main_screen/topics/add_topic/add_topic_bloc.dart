@@ -11,6 +11,7 @@ class AddTopicManager {
 
   Future<void> saveTopic(Topic topic) async {
     database.addOrChangeTopic(topic);
+    await localRepository.saveTopic(topic);
   }
 
   void getUsers() {

@@ -31,6 +31,7 @@ Future<String> initHive() async {
   await Hive.openBox(HIVE_EVENTS);
   await Hive.openBox(HIVE_TOPICS);
   await Hive.openBox(HIVE_MESSAGES);
+  await Hive.openBox(HIVE_MESSAGE_TOPIC_RELATION);
 
   final result = await Hive.openBox(HIVE_USER);
   if (result.isNotEmpty)

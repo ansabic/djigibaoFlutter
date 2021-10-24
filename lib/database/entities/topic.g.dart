@@ -19,16 +19,17 @@ class TopicAdapter extends TypeAdapter<Topic> {
     return Topic(
       name: fields[0] as String,
       type: fields[1] as TopicType,
-      users: (fields[2] as List).cast<User>(),
-      usersSolved: (fields[3] as List).cast<User>(),
-      messages: (fields[4] as List).cast<Message>(),
+      users: (fields[2] as List?)?.cast<User>(),
+      usersSolved: (fields[3] as List?)?.cast<User>(),
+      messages: (fields[4] as List?)?.cast<Message>(),
+      created: fields[5] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, Topic obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class TopicAdapter extends TypeAdapter<Topic> {
       ..writeByte(3)
       ..write(obj.usersSolved)
       ..writeByte(4)
-      ..write(obj.messages);
+      ..write(obj.messages)
+      ..writeByte(5)
+      ..write(obj.created);
   }
 
   @override
